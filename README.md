@@ -21,6 +21,7 @@ _A LangGraph-powered agent for cross-program root-cause tracing of Mitsubishi Q-
 
 ## 目录 · Table of Contents
 
+- [界面预览 · Screenshots](#界面预览--screenshots)
 - [一、项目背景 · Background](#一项目背景--background)
 - [二、系统架构 · Architecture](#二系统架构--architecture)
 - [三、数据来源 · Data Sources](#三数据来源--data-sources)
@@ -31,6 +32,36 @@ _A LangGraph-powered agent for cross-program root-cause tracing of Mitsubishi Q-
 - [八、性能优化记录 · Performance Notes](#八性能优化记录--performance-notes)
 - [九、项目文件结构 · Project Layout](#九项目文件结构--project-layout)
 - [十、后续规划 · Roadmap](#十后续规划--roadmap)
+
+---
+
+## 界面预览 · Screenshots
+
+系统采用 Gradio 网页界面，一次报警诊断会**按流程逐步呈现**：主界面对话 → 生成逻辑梯形图 → 文字分析（SET / RESET / 复位检查）→ 诊断摘要。
+
+### 主界面 · Main UI
+
+用户以自然语言提问（如"F XX 报警是什么原因？"），右侧可切换产线，支持多轮对话。
+
+![主界面 · Main UI](docs/screenshots/main-ui.png)
+
+### 逻辑梯形图 · Ladder Diagram
+
+分析首先将相关规则的条件逻辑还原为梯形图，直观展示触发条件。
+
+![逻辑梯形图 · Ladder Diagram](docs/screenshots/analysis_ladder_diagram.png)
+
+### 文字分析 · Text Analysis
+
+基于梯形图逐条解读控制逻辑：SET 触发条件、RESET 清除条件，以及复位检查。
+
+![文字分析 · Text Analysis](docs/screenshots/analysis_text_documentation.png)
+
+### 诊断摘要 · Analysis Summary
+
+最后给出跨程序因果链的整体结论与根因摘要。
+
+![诊断摘要 · Analysis Summary](docs/screenshots/analysis_summary.png)
 
 ---
 
