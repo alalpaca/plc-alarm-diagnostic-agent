@@ -1,14 +1,44 @@
-# PLC 智能诊断系统
+<div align="center">
 
-基于 LangGraph 的三菱 Q 系列 PLC 程序分析与报警诊断 Agent。支持**跨程序因果链回溯**（29个子程序合并分析），自动追溯到物理 I/O 层（X/Y 端子）。
+# PLC 智能诊断系统 · PLC Alarm Diagnostic Agent
+
+**基于 LangGraph 的三菱 Q 系列 PLC 报警根因诊断 Agent**
+_A LangGraph-powered agent for cross-program root-cause tracing of Mitsubishi Q-series PLC alarms._
+
+![Python](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white)
+![LangGraph](https://img.shields.io/badge/LangGraph-ReAct%20Agent-1C3C3C)
+![FastAPI](https://img.shields.io/badge/FastAPI-REST%20API-009688?logo=fastapi&logoColor=white)
+![Gradio](https://img.shields.io/badge/Gradio-Web%20UI-F97316)
+![License](https://img.shields.io/badge/License-Proprietary-red)
+
+</div>
+
+支持**跨程序因果链回溯**（多个子程序合并分析），从报警输出一路自动追溯到物理 I/O 层（X/Y 端子），并附带设备中英文注释，帮助工程师在**不翻阅程序**的情况下快速定位根因。
+
+![系统处理流程 · Processing Pathway](docs/architecture.png)
 
 ---
 
-## 一、项目背景
+## 目录 · Table of Contents
 
-在CG 圆柱磨床上，三菱 Q 系列 PLC 负责监控设备状态。当传感器异常、气压不足、安全链断开时，PLC 会触发报警（F 设备）。
+- [一、项目背景 · Background](#一项目背景--background)
+- [二、系统架构 · Architecture](#二系统架构--architecture)
+- [三、数据来源 · Data Sources](#三数据来源--data-sources)
+- [四、离线提取流程 · Offline Extraction](#四离线提取流程--offline-extraction)
+- [五、Agent 智能问答系统 · Agent](#五agent-智能问答系统--agent)
+- [六、使用指南 · Usage](#六使用指南--usage)
+- [七、新增产线操作流程 · Adding a New Line](#七新增产线操作流程--adding-a-new-line)
+- [八、性能优化记录 · Performance Notes](#八性能优化记录--performance-notes)
+- [九、项目文件结构 · Project Layout](#九项目文件结构--project-layout)
+- [十、后续规划 · Roadmap](#十后续规划--roadmap)
 
-**核心痛点**：报警触发后，工程师需要从报警输出一步步往前追溯"为什么会报这个警"——涉及多个子程序的交叉引用，人工翻阅困难。
+---
+
+## 一、项目背景 · Background
+
+在 CG 圆柱磨床上，三菱 Q 系列 PLC 负责监控设备状态。当传感器异常、气压不足、安全链断开时，PLC 会触发报警（F 设备）。
+
+> 💡 **核心痛点**：报警触发后，工程师需要从报警输出一步步往前追溯"为什么会报这个警"——涉及多个子程序的交叉引用，人工翻阅困难。
 
 **本系统的目标**：
 - 输入一个报警编号（如 F XX），自动返回跨程序的完整因果链
@@ -18,7 +48,7 @@
 
 ---
 
-## 二、系统架构
+## 二、系统架构 · Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -51,7 +81,7 @@
 
 ---
 
-## 三、数据来源
+## 三、数据来源 · Data Sources
 
 ### PLC 程序文件
 
@@ -91,7 +121,7 @@ F702  → "MAIN AIR PRESSURE ALARM"
 
 ---
 
-## 四、离线提取流程
+## 四、离线提取流程 · Offline Extraction
 
 ### 4.1 单文件提取（legacy）
 
@@ -168,7 +198,7 @@ plc_knowledge_out_XX/
 
 ---
 
-## 五、Agent 智能问答系统
+## 五、Agent 智能问答系统 · Agent
 
 ### 5.1 架构
 
@@ -212,7 +242,7 @@ PROGRAM_REGISTRY = {
 
 ---
 
-## 六、使用指南
+## 六、使用指南 · Usage
 
 ### 6.1 环境准备
 
@@ -296,7 +326,7 @@ GET http://localhost:8000/devices/M4321?program_key=WH201_CG1
 
 ---
 
-## 七、新增产线操作流程
+## 七、新增产线操作流程 · Adding a New Line
 
 当需要接入新产线时，只需 3 步：
 
@@ -337,7 +367,7 @@ python plc_extract/batch_extract.py \
 
 ---
 
-## 八、性能优化记录
+## 八、性能优化记录 · Performance Notes
 
 | 问题 | 原因 | 解决方案 |
 |------|------|----------|
@@ -349,7 +379,7 @@ python plc_extract/batch_extract.py \
 
 ---
 
-## 九、项目文件结构
+## 九、项目文件结构 · Project Layout
 
 > 注：以下标注 **[专有数据·不在仓库]** 的目录含康宁真实 PLC 数据，已被 `.gitignore` 排除，需按 6.1 说明自行准备。
 
@@ -401,7 +431,7 @@ PLC/
 
 ---
 
-## 十、后续规划
+## 十、后续规划 · Roadmap
 
 | 优先级 | 任务 | 状态 |
 |--------|------|------|
@@ -411,3 +441,11 @@ PLC/
 | P3 | 更多产线接入（WH202, WH203...） | 待数据 |
 | P4 | 回溯终端类型细化（区分 Motion CPU / FIMC / 硬接线） | 待设计 |
 | P5 | 实时数据对接（在线监控 + 诊断建议） | 待规划 |
+
+---
+
+## 许可证 · License
+
+**Proprietary（专有）** — 本项目及其关联的 PLC 程序、设备注释、知识库等数据均为公司内部专有资产，仅限授权人员在内部范围使用，未经许可不得对外分发、公开或商用。
+
+> ⚠️ 本仓库**不包含**任何真实 PLC 源程序与知识库数据（详见 [`.gitignore`](.gitignore)）。使用前请参见 [六、使用指南](#六使用指南--usage) 自行准备数据。
