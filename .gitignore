@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment / Secrets
+.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Gradio
+flagged/
+
+# Data (SQLite databases, cache, conversation history)
+data/
+
+# ============================================================
+# Proprietary data (NOT for upload) - real PLC programs,
+# device comments, knowledge base outputs, machine documents
+# ============================================================
+plc_extract/plc_file/
+plc_extract/plc_knowledge_out_000/
+plc_knowledge_out_WH201_CG1/
+plc_test_file/
+ref/
+system_show_images/
+Felix PLC Agent Processing Pathway.png
+
+# Misc / temp / junk
+_ul
+graph_test.txt
+tests/app_backup.py
+tests/strange_svg_output
