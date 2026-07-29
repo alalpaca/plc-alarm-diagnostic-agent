@@ -6,12 +6,12 @@
 
 ## 一、项目背景
 
-在康宁（Corning）CG 圆柱磨床上，三菱 Q 系列 PLC 负责监控设备状态。当传感器异常、气压不足、安全链断开时，PLC 会触发报警（F 设备）。
+在CG 圆柱磨床上，三菱 Q 系列 PLC 负责监控设备状态。当传感器异常、气压不足、安全链断开时，PLC 会触发报警（F 设备）。
 
 **核心痛点**：报警触发后，工程师需要从报警输出一步步往前追溯"为什么会报这个警"——涉及多个子程序的交叉引用，人工翻阅困难。
 
 **本系统的目标**：
-- 输入一个报警编号（如 F702），自动返回跨程序的完整因果链
+- 输入一个报警编号（如 F XX），自动返回跨程序的完整因果链
 - 追溯到最终的物理输入（X 端子）或物理输出（Y 端子）
 - 附带每个设备的中文/英文注释，帮助理解物理含义
 - 通过自然语言对话交互，无需翻阅程序
@@ -154,15 +154,15 @@ python plc_extract/batch_extract.py --input plc_extract/plc_file --output plc_kn
 ### 4.4 输出文件
 
 ```
-plc_knowledge_out_WH201_CG1/
+plc_knowledge_out_XX/
 ├── summary.json              # 全局统计
-├── programs.json             # 29个程序元信息
-├── comments.json             # 62,447 条设备注释
-├── rules.jsonl               # 10,942 条规则（含 program_no 字段）
-├── edges.jsonl               # 39,874 条因果边
-├── devices.jsonl             # 10,884 个设备（97%有注释）
-├── device_traces.jsonl       # 6,691 个设备的直接写入规则（扁平格式）
-├── sections.jsonl            # 533 个程序段
+├── programs.json             # 程序元信息
+├── comments.json             # 设备注释
+├── rules.jsonl               # 规则（含 program_no 字段）
+├── edges.jsonl               # 因果边
+├── devices.jsonl             # 设备
+├── device_traces.jsonl       # 设备的直接写入规则（扁平格式）
+├── sections.jsonl            # 程序段
 └── alarm_trace.jsonl         # 空（回溯由 Agent 运行时按需计算）
 ```
 
@@ -202,7 +202,7 @@ plc_knowledge_out_WH201_CG1/
 # plc_agent/config.py
 PROGRAM_REGISTRY = {
     "WH201_CG1": {
-        "name": "WH201 CG1 全局 (29个程序合并)",
+        "name": "XX产线名 全局 (XX个程序合并)",
         "path": PROJECT_ROOT / "plc_knowledge_out_WH201_CG1",
         "type": "global",
     },
@@ -225,7 +225,7 @@ cp .env.example .env
 # 编辑 .env，填入以下值：
 #   OPENAI_API_BASE  你的 OpenAI 兼容 API 网关地址
 #   OPENAI_API_KEY   你的 API Key
-#   MODEL_NAME       使用的模型（如 gpt-4o）
+#   MODEL_NAME       使用的模型（如 gpt5.5）
 ```
 
 > **数据准备说明**：本仓库**不包含** PLC 源程序文件与生成的知识库（属专有数据，已在 `.gitignore` 中排除）。
@@ -298,13 +298,13 @@ GET http://localhost:8000/devices/M4321?program_key=WH201_CG1
 
 ## 七、新增产线操作流程
 
-当需要接入新产线（如 WH202_CG1）时，只需 3 步：
+当需要接入新产线时，只需 3 步：
 
 ### Step 1：准备文件
 
 将新产线的所有 CSV 文件（000.csv ~ 960.csv + COMMENT.csv）放入一个目录：
 ```
-plc_extract/plc_file_WH202/
+plc_extract/plc_file_XX/
 ├── 000.csv
 ├── 001.csv
 ├── ...
@@ -316,9 +316,9 @@ plc_extract/plc_file_WH202/
 
 ```bash
 python plc_extract/batch_extract.py \
-  --input plc_extract/plc_file_WH202 \
-  --output plc_knowledge_out_WH202_CG1 \
-  --line WH202_CG1
+  --input plc_extract/plc_file_XX \
+  --output plc_knowledge_out_XX \
+  --line XX
 ```
 
 ### Step 3：注册到 config
@@ -326,9 +326,9 @@ python plc_extract/batch_extract.py \
 在 `plc_agent/config.py` 的 `PROGRAM_REGISTRY` 中添加：
 
 ```python
-"WH202_CG1": {
-    "name": "WH202 CG1 全局 (XX个程序合并)",
-    "path": PROJECT_ROOT / "plc_knowledge_out_WH202_CG1",
+"XX": {
+    "name": "XX 全局 (XX个程序合并)",
+    "path": PROJECT_ROOT / "plc_knowledge_out_XX",
     "type": "global",
 },
 ```
